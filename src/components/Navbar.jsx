@@ -42,7 +42,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Navigation Links */}
+          
           <div className="hidden md:flex items-center gap-8">
             <a 
               href="#search" 
@@ -64,7 +64,7 @@ const Navbar = () => {
             </a>
           </div>
 
-          {/* Theme Toggle */}
+          
           <button
             onClick={() => dispatch(toggleTheme())}
             className="p-3 rounded-xl bg-gray-100 dark:bg-dark-card hover:bg-gray-200 dark:hover:bg-dark-hover transition-all duration-300 group"

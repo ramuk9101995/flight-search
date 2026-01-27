@@ -15,9 +15,9 @@ const FlightCard = ({ flight, airlines }) => {
   return (
     <div className="card card-hover group">
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Flight Details */}
+        
         <div className="flex-1 space-y-4">
-          {/* Airline */}
+          
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary-100 dark:bg-primary-900/20 rounded-lg">
               <Plane className="w-5 h-5 text-primary-600" />
@@ -32,9 +32,9 @@ const FlightCard = ({ flight, airlines }) => {
             </div>
           </div>
 
-          {/* Route */}
+          
           <div className="flex items-center justify-between gap-4">
-            {/* Departure */}
+            
             <div className="text-center">
               <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {formatTime(firstSegment.departure.at)}
@@ -44,7 +44,7 @@ const FlightCard = ({ flight, airlines }) => {
               </p>
             </div>
 
-            {/* Duration & Stops */}
+           
             <div className="flex-1 relative px-4">
               <div className="text-center mb-2">
                 <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center justify-center gap-1">
@@ -69,7 +69,7 @@ const FlightCard = ({ flight, airlines }) => {
               )}
             </div>
 
-            {/* Arrival */}
+            
             <div className="text-center">
               <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {formatTime(lastSegment.arrival.at)}
@@ -80,7 +80,7 @@ const FlightCard = ({ flight, airlines }) => {
             </div>
           </div>
 
-          {/* Additional Info */}
+          
           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
             <span className="flex items-center gap-1">
               <Users className="w-4 h-4" />
@@ -94,7 +94,7 @@ const FlightCard = ({ flight, airlines }) => {
           </div>
         </div>
 
-        {/* Price & Action */}
+        
         <div className="lg:w-48 flex lg:flex-col items-center lg:items-end justify-between lg:justify-center gap-4 lg:border-l border-gray-200 dark:border-gray-700 lg:pl-6">
           <div className="text-center lg:text-right">
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
@@ -119,7 +119,7 @@ const FlightCard = ({ flight, airlines }) => {
         </div>
       </div>
 
-      {/* Expandable Segment Details (can be added later) */}
+      
     </div>
   );
 };

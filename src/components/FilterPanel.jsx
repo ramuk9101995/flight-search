@@ -40,7 +40,7 @@ const FilterPanel = ({ airlines = {}, availableAirlines = [] }) => {
 
   return (
     <div className="card space-y-6">
-      {/* Header */}
+     
       <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-primary-100 dark:bg-primary-900/20 rounded-lg">
@@ -68,7 +68,7 @@ const FilterPanel = ({ airlines = {}, availableAirlines = [] }) => {
         )}
       </div>
 
-      {/* Sort By */}
+     
       <div>
         <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
           <ArrowUpDown className="w-4 h-4" />
@@ -87,7 +87,7 @@ const FilterPanel = ({ airlines = {}, availableAirlines = [] }) => {
         </select>
       </div>
 
-      {/* Price Range */}
+      
       <div>
         <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
           <DollarSign className="w-4 h-4" />
@@ -134,7 +134,7 @@ const FilterPanel = ({ airlines = {}, availableAirlines = [] }) => {
         </div>
       </div>
 
-      {/* Stops */}
+      
       <div>
         <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
           <PlaneIcon className="w-4 h-4" />
@@ -160,7 +160,7 @@ const FilterPanel = ({ airlines = {}, availableAirlines = [] }) => {
         </div>
       </div>
 
-      {/* Airlines */}
+      
       {availableAirlines.length > 0 && (
         <div>
           <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
@@ -168,7 +168,7 @@ const FilterPanel = ({ airlines = {}, availableAirlines = [] }) => {
             Airlines
           </label>
           
-          {/* Search Airlines */}
+          
           <input
             type="text"
             value={filters.searchQuery}

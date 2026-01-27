@@ -63,7 +63,7 @@ const FlightList = ({ flights, airlines }) => {
 
   return (
     <div className="space-y-6">
-      {/* Results Header */}
+     
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-xl font-display font-semibold text-gray-900 dark:text-gray-100">
@@ -75,7 +75,7 @@ const FlightList = ({ flights, airlines }) => {
         </div>
       </div>
 
-      {/* Flight Cards */}
+      
       <div className="space-y-4">
         {filteredAndSortedFlights.map((flight) => (
           <FlightCard 

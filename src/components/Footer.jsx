@@ -54,7 +54,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact */}
+         
           <div>
             <h3 className="font-display font-semibold text-gray-900 dark:text-gray-100 mb-4">
               Connect

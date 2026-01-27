@@ -14,8 +14,12 @@ const CitySearchInput = ({
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  
   const wrapperRef = useRef(null);
+  // NEW: Track if the update is coming from a selection to prevent re-searching
+  const isSelectionRef = useRef(false);
 
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
@@ -27,9 +31,17 @@ const CitySearchInput = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Search logic
   useEffect(() => {
+    // 1. If this change comes from selecting an item, STOP here.
+    if (isSelectionRef.current) {
+      isSelectionRef.current = false; // Reset the flag
+      return;
+    }
+
     if (!query || query.length < 2) {
       setSuggestions([]);
+      setIsOpen(false); // Ensure it closes if query is cleared
       return;
     }
 
@@ -37,8 +49,14 @@ const CitySearchInput = ({
       setIsLoading(true);
       try {
         const results = await searchLocations(query);
-        setSuggestions(results);
-        setIsOpen(true);
+        // Only open if we still have results and user hasn't selected something in the meantime
+        if (results && results.length > 0) {
+          setSuggestions(results);
+          setIsOpen(true);
+        } else {
+          setSuggestions([]);
+          setIsOpen(false);
+        }
       } catch (error) {
         console.error('Error fetching locations:', error);
         setSuggestions([]);
@@ -51,9 +69,14 @@ const CitySearchInput = ({
   }, [query]);
 
   const handleSelect = (location) => {
+    // 2. Set the flag to true so the useEffect knows to ignore this update
+    isSelectionRef.current = true;
+    
     const displayText = `${location.name} (${location.iataCode})`;
     setQuery(displayText);
     onChange(location.iataCode);
+    
+    // 3. Close everything immediately
     setIsOpen(false);
     setSuggestions([]);
   };
@@ -61,8 +84,13 @@ const CitySearchInput = ({
   const handleInputChange = (e) => {
     const newValue = e.target.value;
     setQuery(newValue);
+    // Open dropdown if user starts typing again
+    if (newValue.length >= 2) {
+      setIsOpen(true);
+    }
     if (!newValue) {
       onChange('');
+      setIsOpen(false);
     }
   };
 
@@ -83,7 +111,10 @@ const CitySearchInput = ({
           type="text"
           value={query}
           onChange={handleInputChange}
-          onFocus={() => suggestions.length > 0 && setIsOpen(true)}
+          onFocus={() => {
+            // Only open on focus if we have suggestions ready
+            if (suggestions.length > 0) setIsOpen(true);
+          }}
           placeholder={placeholder}
           className={`input-field pl-12 pr-12 ${error ? 'border-red-500 focus:ring-red-500' : ''}`}
         />

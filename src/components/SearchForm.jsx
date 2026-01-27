@@ -66,7 +66,7 @@ const SearchForm = ({ onSearch }) => {
   return (
     <div className="card animate-slide-up">
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Trip Type Toggle */}
+       
         <div className="flex gap-4">
           <button
             type="button"
@@ -92,7 +92,7 @@ const SearchForm = ({ onSearch }) => {
           </button>
         </div>
 
-        {/* Origin and Destination */}
+       
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative">
           <CitySearchInput
             value={searchParams.origin}
@@ -102,7 +102,7 @@ const SearchForm = ({ onSearch }) => {
             error={errors.origin}
           />
 
-          {/* Swap Button */}
+          
           <button
             type="button"
             onClick={handleSwap}
@@ -121,7 +121,7 @@ const SearchForm = ({ onSearch }) => {
           />
         </div>
 
-        {/* Dates */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -164,7 +164,7 @@ const SearchForm = ({ onSearch }) => {
           )}
         </div>
 
-        {/* Passengers and Class */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -200,7 +200,7 @@ const SearchForm = ({ onSearch }) => {
           </div>
         </div>
 
-        {/* Search Button */}
+        
         <Button
           type="submit"
           variant="primary"
