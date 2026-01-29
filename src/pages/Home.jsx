@@ -14,27 +14,25 @@ import Hero from './Hero';
 
 const Home = () => {
   const dispatch = useDispatch();
-  // We keep this to store the "active" search params that drive the query
+  
   const [searchParams, setSearchParams] = useState(null);
   const [showResults, setShowResults] = useState(false);
 
-  // 2. Use useQuery for caching
+ 
   const { data, isLoading, error, isFetched } = useQuery({
-    // The queryKey acts as the cache ID. If searchParams change, a new fetch triggers.
+    
     queryKey: ['flights', searchParams],
     
-    // The function that fetches data
+    
     queryFn: () => searchFlights(searchParams),
     
-    // Config: Only run the query if we have searchParams
+    
     enabled: !!searchParams,
     
-    // CACHING CONFIGURATION:
-    // Data remains "fresh" for 5 minutes (no refetching if same search happens)
     staleTime: 1000 * 60 * 5, 
-    // Cache is kept in garbage collection for 30 minutes
+    
     gcTime: 1000 * 60 * 30,   
-    // Don't retry immediately on user error (optional)
+    
     retry: 1,
   });
 
@@ -42,7 +40,7 @@ const Home = () => {
   const airlines = data?.dictionaries?.carriers || {};
   const availableAirlines = getUniqueAirlines(flights);
 
-  // Update Redux when flight data changes
+ 
   useEffect(() => {
     if (flights.length > 0) {
       const [min, max] = getPriceRange(flights);
@@ -53,8 +51,7 @@ const Home = () => {
 
   const handleSearch = (params) => {
     setShowResults(true);
-    // 3. Instead of calling mutate(), we set the state.
-    // This updates the queryKey, which triggers the fetch (and caching).
+    
     setSearchParams(params);
 
     setTimeout(() => {
@@ -102,7 +99,7 @@ const Home = () => {
               </div>
             )}
 
-            {/* Check !isLoading and isFetched to ensure we don't show empty state before first load */}
+           
             {!isLoading && !error && flights.length > 0 && (
               <div>
                 <div className="mb-8">
