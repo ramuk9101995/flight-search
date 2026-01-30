@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Plane, MapPin, Loader2 } from 'lucide-react';
 import { searchLocations } from '../services/amadeusApi';
 
@@ -11,13 +12,38 @@ const CitySearchInput = ({
   label = null,
 }) => {
   const [query, setQuery] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  // We use this state to feed TanStack Query. 
+  // We only update it 300ms after the user stops typing.
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   
   const wrapperRef = useRef(null);
-  // NEW: Track if the update is coming from a selection to prevent re-searching
-  const isSelectionRef = useRef(false);
+
+  // 1. DEBOUNCE LOGIC
+  // Syncs 'query' (what user sees) to 'debouncedQuery' (what API sees) with a delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // 2. TANSTACK QUERY LOGIC
+  const { data: suggestions = [], isLoading } = useQuery({
+    // The Cache Key: The API response is stored under this unique ID
+    queryKey: ['locations', debouncedQuery],
+    
+    // The Fetch Function
+    queryFn: () => searchLocations(debouncedQuery),
+    
+    // Constraints: Only run if we have 2+ chars
+    enabled: debouncedQuery.length >= 2,
+    
+    // CACHING: Keep this data fresh for 1 hour.
+    // If user types the same city again, it won't hit the API.
+    staleTime: 1000 * 60 * 60, 
+  });
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -31,63 +57,28 @@ const CitySearchInput = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Search logic
-  useEffect(() => {
-    // 1. If this change comes from selecting an item, STOP here.
-    if (isSelectionRef.current) {
-      isSelectionRef.current = false; // Reset the flag
-      return;
-    }
-
-    if (!query || query.length < 2) {
-      setSuggestions([]);
-      setIsOpen(false); // Ensure it closes if query is cleared
-      return;
-    }
-
-    const timeoutId = setTimeout(async () => {
-      setIsLoading(true);
-      try {
-        const results = await searchLocations(query);
-        // Only open if we still have results and user hasn't selected something in the meantime
-        if (results && results.length > 0) {
-          setSuggestions(results);
-          setIsOpen(true);
-        } else {
-          setSuggestions([]);
-          setIsOpen(false);
-        }
-      } catch (error) {
-        console.error('Error fetching locations:', error);
-        setSuggestions([]);
-      } finally {
-        setIsLoading(false);
-      }
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [query]);
-
   const handleSelect = (location) => {
-    // 2. Set the flag to true so the useEffect knows to ignore this update
-    isSelectionRef.current = true;
-    
     const displayText = `${location.name} (${location.iataCode})`;
+    
+    // Update the input text
     setQuery(displayText);
+    
+    // Pass the code to parent
     onChange(location.iataCode);
     
-    // 3. Close everything immediately
+    // Close the dropdown explicitly
     setIsOpen(false);
-    setSuggestions([]);
   };
 
   const handleInputChange = (e) => {
     const newValue = e.target.value;
     setQuery(newValue);
-    // Open dropdown if user starts typing again
+
+    // Only open the dropdown if the user is actively typing
     if (newValue.length >= 2) {
       setIsOpen(true);
     }
+    
     if (!newValue) {
       onChange('');
       setIsOpen(false);
@@ -112,13 +103,14 @@ const CitySearchInput = ({
           value={query}
           onChange={handleInputChange}
           onFocus={() => {
-            // Only open on focus if we have suggestions ready
+            // Open on click if we already have results in cache
             if (suggestions.length > 0) setIsOpen(true);
           }}
           placeholder={placeholder}
           className={`input-field pl-12 pr-12 ${error ? 'border-red-500 focus:ring-red-500' : ''}`}
         />
         
+        {/* Show Loader only when TanStack is actually fetching new data */}
         {isLoading && (
           <div className="absolute right-4 top-1/2 -translate-y-1/2">
             <Loader2 className="w-5 h-5 animate-spin text-primary-600" />
